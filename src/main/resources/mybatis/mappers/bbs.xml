@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bbs">
+	<insert id="insert" parameterType="kr.ac.sungkyul.mysite.vo.BoardVo">
+		<![CDATA[
+			insert into bbs(no, title, content, regDate) 
+				values(seq_bbs.nextval, #{title}, #{content}, sysdate)
+		]]>
+	</insert>
+	
+	<select id="list" resultType="kr.ac.sungkyul.mysite.vo.BoardVo">
+		<![CDATA[
+			select no, title, content, regdate from bbs order by no desc
+		]]>
+	</select>
+	
+	<select id="selectBoard" parameterType="kr.ac.sungkyul.mysite.vo.BoardVo" resultType="kr.ac.sungkyul.mysite.vo.BoardVo">
+		<![CDATA[
+			select no, title, content, regdate from bbs where no=#{no}
+		]]>
+	</select>
+	
+	<delete id="deleteBoard" parameterType="kr.ac.sungkyul.mysite.vo.BoardVo">
+		<![CDATA[
+			delete from bbs where no=#{no}
+		]]>
+	</delete>
+	
+	<update id="updateBoard" parameterType="kr.ac.sungkyul.mysite.vo.BoardVo">
+		<![CDATA[
+			update bbs set title=#{title}, content=#{content} where no=#{no}
+		]]>
+	</update>
+</mapper>

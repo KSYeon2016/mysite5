@@ -19,18 +19,22 @@
 					<input type="submit" value="찾기">
 				</form>
 				
-				
 				<table class="tbl-ex">
 					<tr>
 						<th>번호</th>
 						<th>제목</th>
 						<th>작성일</th>
+						<th></th>
 					</tr>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
+					
+					<c:forEach items='${list }' var='vo'>
+						<tr>
+							<td>${vo.no }</td>
+							<td><a href="view?no=${vo.no }">${vo.title }</a></td>
+							<td>${vo.regDate }</td>
+							<td><a href="delete?no=${vo.no }">삭제</a></td>
+						</tr>
+					</c:forEach>
 				</table>
 				<div class="bottom">
 					<a href="write" id="new-book">글쓰기</a>

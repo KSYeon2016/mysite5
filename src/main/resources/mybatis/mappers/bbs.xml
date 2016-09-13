@@ -3,10 +3,16 @@
 
 <mapper namespace="bbs">
 	<insert id="insert" parameterType="kr.ac.sungkyul.mysite.vo.BoardVo">
-		<![CDATA[
-			insert into bbs(no, title, content, regDate) 
-				values(seq_bbs.nextval, #{title}, #{content}, sysdate)
-		]]>
+		<selectKey resultType="java.lang.Long" keyProperty="no" order="BEFORE">
+             <![CDATA[
+                SELECT seq_bbs.nextval AS no FROM DUAL
+             ]]>
+		</selectKey>
+         
+      <![CDATA[
+         insert into bbs(no, title, content, regDate) 
+         	values(#{no}, #{title}, #{content}, sysdate)
+      ]]>
 	</insert>
 	
 	<select id="list" resultType="kr.ac.sungkyul.mysite.vo.BoardVo">
@@ -32,4 +38,23 @@
 			update bbs set title=#{title}, content=#{content} where no=#{no}
 		]]>
 	</update>
+
+	<insert id="insertFile" parameterType="kr.ac.sungkyul.mysite.vo.AttachFileVo">
+      <![CDATA[
+         insert into bbs_file(fNo, no, path, orgName, saveName, fileSize)
+         	values(seq_bbs_file.nextval, #{no}, #{path}, #{orgName}, #{saveName}, #{fileSize})
+      ]]>
+	</insert>
+	
+	<select id="selectAttachFileByNo" parameterType="java.lang.Long" resultType="kr.ac.sungkyul.mysite.vo.AttachFileVo">
+		<![CDATA[
+			select * from bbs_file where no=#{no}
+		]]>
+	</select>
+	
+	<select id="selectAttachFileByFno" parameterType="java.lang.Long" resultType="kr.ac.sungkyul.mysite.vo.AttachFileVo">
+		<![CDATA[
+			select * from bbs_file where fno=#{fno}
+		]]>
+	</select>
 </mapper>

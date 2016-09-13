@@ -25,5 +25,13 @@ ALTER TABLE BBS
  ADD CONSTRAINT BBS_PK PRIMARY KEY ( NO )
  USING INDEX BBS_PK;
 
-
 CREATE SEQUENCE seq_bbs;
+select seq_bbs.nextval from dual;
+
+-- select
+select * from bbs;
+select no, title, regdate from bbs;
+
+delete from bbs where no=2;
+
+update bbs set title='두번째 수정', content='두번째 수정임다' where no=2;

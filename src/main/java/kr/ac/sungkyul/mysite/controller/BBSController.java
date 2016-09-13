@@ -1,14 +1,22 @@
 package kr.ac.sungkyul.mysite.controller;
 
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.ac.sungkyul.mysite.service.BBSService;
+import kr.ac.sungkyul.mysite.vo.AttachFileVo;
 import kr.ac.sungkyul.mysite.vo.BoardVo;
 
 @Controller
@@ -23,11 +31,10 @@ public class BBSController {
 		return "board/write";
 	}
 	
-	// 글 등록
-	@RequestMapping(value="register", method=RequestMethod.POST)
-	public String register(BoardVo boardVo){
-		bbsService.insert(boardVo);
-		
+	// 글등록
+	@RequestMapping(value = "register", method = RequestMethod.POST)
+	public String registerBoard(BoardVo boardVo, MultipartFile file) throws Exception {
+		bbsService.insert(boardVo, file);
 		return "redirect:/bbs/list";
 	}
 	
@@ -43,10 +50,12 @@ public class BBSController {
 	
 	// 글 보기
 	@RequestMapping(value="view", method=RequestMethod.GET)
-	public String boardView(Model model, BoardVo vo){
-		vo = bbsService.selectBoard(vo);
+	public String boardView(Model model, BoardVo boardVo){
+		boardVo = bbsService.selectBoard(boardVo);
+		AttachFileVo attachFileVo = bbsService.selectAttachFileByNo(boardVo.getNo());
 		
-		model.addAttribute("vo", vo);
+		model.addAttribute("vo", boardVo);
+		model.addAttribute("avo", attachFileVo);
 		
 		return "board/view";
 	}
@@ -73,5 +82,23 @@ public class BBSController {
 		bbsService.updateBoard(vo);
 		
 		return "redirect:/bbs/view?no=" + vo.getNo();
+	}
+	
+	// 다운로드
+	@RequestMapping(value = "download", method = RequestMethod.GET)
+	public void downloadFile(Long fNo, HttpServletResponse res) throws Exception {
+		System.out.println(fNo);
+		AttachFileVo attachFileVO = bbsService.selectAttachFileByFno(fNo);
+		String saveName = attachFileVO.getSaveName();
+		String orgName = attachFileVO.getOrgName();
+		    
+		res.setContentType("application/download");
+		res.setHeader("Content-disposition", "attachment; filename=\"" + URLEncoder.encode(orgName,"UTF-8") +"\"");
+		OutputStream resOut = res.getOutputStream();
+		
+		FileInputStream fin = new FileInputStream("C:\\upload\\"+saveName);
+		FileCopyUtils.copy(fin, resOut);
+			
+		fin.close();
 	}
 }

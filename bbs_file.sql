@@ -32,5 +32,6 @@ ALTER TABLE bbs_file
  ADD CONSTRAINT bbs_file_PK PRIMARY KEY ( fNO )
  USING INDEX bbs_file_PK;
 
-
 CREATE SEQUENCE seq_bbs_file;
+
+select * from bbs_file;

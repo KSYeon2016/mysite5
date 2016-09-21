@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.ac.sungkyul.mysite.service.BBSService;
@@ -100,5 +102,22 @@ public class BBSController {
 		FileCopyUtils.copy(fin, resOut);
 			
 		fin.close();
+	}
+	
+	@RequestMapping(value = "view2", method = RequestMethod.GET)
+	public String view2() {
+
+		return "board/view2";
+	}
+
+	@RequestMapping(value = "readAjax", method = RequestMethod.POST)
+	@ResponseBody
+	public BoardVo readBoardAjax(@RequestBody BoardVo vo) {
+		System.out.println(vo.getNo());
+		
+		vo = bbsService.selectBoard(vo);
+		System.out.println(vo);
+		
+		return vo;
 	}
 }
